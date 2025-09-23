@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Sentify
 
-## Getting Started
+Aplicación web para organizar playlists de Spotify por estados de ánimo usando heurísticas de audio features.
 
-First, run the development server:
+## Tecnologías
+
+- **Frontend**: Next.js 15 (App Router), React 19, Tailwind CSS, Flowbite
+- **Backend**: Next.js API Routes
+- **Base de Datos**: PostgreSQL (Supabase)
+- **ORM**: Prisma
+- **Autenticación**: OAuth 2.0 con Spotify
+- **Estado**: Zustand
+- **Testing**: Jest + React Testing Library
+
+## Configuración Inicial
+
+### 1. Clona el repositorio
+
+```bash
+git clone <repo-url>
+cd sentify
+```
+
+### 2. Instala dependencias
+
+```bash
+npm install
+```
+
+### 3. Configura variables de entorno
+
+Crea un archivo `.env` en la raíz con:
+
+```env
+DATABASE_URL="postgresql://usuario:password@host:puerto/db?schema=public"
+SPOTIFY_CLIENT_ID="tu_client_id_de_spotify"
+SPOTIFY_CLIENT_SECRET="tu_client_secret_de_spotify"
+NEXTAUTH_SECRET="cadena_aleatoria_segura"
+NEXTAUTH_URL="http://127.0.0.1:3000"
+```
+
+### 5. Configura Base de Datos
+
+La DB está en Supabase, no necesitas migraciones locales. Solo genera el cliente Prisma:
+
+```bash
+npx prisma generate
+```
+
+### 6. Corre el proyecto
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## Comandos Disponibles
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` - Servidor de desarrollo
+- `npm run build` - Build de producción
+- `npm run start` - Servidor de producción
+- `npm run lint` - Linting con ESLint
+- `npm test` - Ejecutar tests
+- `npm run test:coverage` - Tests con cobertura
+- `npx prisma studio` - Explorar DB localmente
 
-## Learn More
+## Estructura del Proyecto
 
-To learn more about Next.js, take a look at the following resources:
+```
+sentify/
+├── app/                 # Next.js App Router
+│   ├── api/            # API Routes
+│   ├── globals.css     # Estilos globales
+│   ├── layout.js       # Layout principal
+│   └── page.js         # Página de inicio
+├── lib/                # Utilidades
+├── prisma/             # Schema de DB
+├── public/             # Assets estáticos
+└── tests/              # Tests (futuro)
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Desarrollo
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Usa `npm run dev` para desarrollo con Turbopack
+- Tests con `npm test` (cobertura objetivo: 90%)
+- Linting automático con ESLint
 
-## Deploy on Vercel
+## Despliegue
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Recomendado: Vercel (integración con Next.js)
+- DB: Supabase (managed PostgreSQL)
