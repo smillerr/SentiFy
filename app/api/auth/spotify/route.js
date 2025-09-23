@@ -1,9 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 import { encrypt, decrypt } from "@/lib/spotifyAuth";
-
-const prisma = new PrismaClient();
 
 export async function GET() {
   const scopes =

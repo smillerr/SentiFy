@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/prisma";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
@@ -16,6 +14,7 @@ export async function GET(request) {
       where: { spotifyId: userId },
       select: {
         id: true,
+        spotifyId: true,
         displayName: true,
         email: true,
         profileImageUrl: true,

@@ -58,7 +58,7 @@ export default function Home() {
   };
 
   const goToTracks = () => {
-    window.location.href = `/tracks?userId=${user.id}`;
+    window.location.href = `/tracks?userId=${user.spotifyId}`;
   };
 
   if (isLoading) {
