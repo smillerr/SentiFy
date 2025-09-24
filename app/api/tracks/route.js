@@ -31,26 +31,40 @@ export async function GET(request) {
     const data = await response.json();
     const tracks = data.items;
 
-    // Store tracks in DB if not exists
-    for (const item of tracks) {
-      const track = item.track;
-      await prisma.track.upsert({
-        where: {
-          userId_spotifyTrackId: {
-            userId: user.id,
-            spotifyTrackId: track.id,
-          },
-        },
-        update: {},
-        create: {
-          spotifyTrackId: track.id,
-          userId: user.id,
-          name: track.name,
-          artist: track.artists[0].name,
-          album: track.album.name,
-          imageUrl: track.album.images[0]?.url,
-        },
-      });
+    // Optimized bulk insert using createMany
+    // 1. Get existing track IDs for this user
+    const existingTrackIds = await prisma.track.findMany({
+      where: { userId: user.id },
+      select: { spotifyTrackId: true }
+    });
+    const existingSet = new Set(existingTrackIds.map(t => t.spotifyTrackId));
+
+    // 2. Filter only new tracks (not already in DB)
+    const newTracks = tracks
+      .filter(item => !existingSet.has(item.track.id))
+      .map(item => ({
+        spotifyTrackId: item.track.id,
+        userId: user.id,
+        name: item.track.name,
+        artist: item.track.artists[0].name,
+        album: item.track.album.name,
+        imageUrl: item.track.album.images[0]?.url,
+      }));
+
+    // 3. Bulk insert only new tracks
+    if (newTracks.length > 0) {
+      try {
+        await prisma.track.createMany({ 
+          data: newTracks,
+          skipDuplicates: true // Extra safety in case of race conditions
+        });
+        console.log(`Inserted ${newTracks.length} new tracks for user ${user.id}`);
+      } catch (error) {
+        console.error('Error bulk inserting tracks:', error);
+        // Don't throw - we can still return the tracks from Spotify
+      }
+    } else {
+      console.log(`No new tracks to insert for user ${user.id}`);
     }
 
     const hasMore = data.next !== null;

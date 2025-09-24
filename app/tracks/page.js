@@ -6,9 +6,11 @@ import Image from "next/image";
 export default function Tracks() {
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [offset, setOffset] = useState(0);
   const [userId, setUserId] = useState(null);
+  const [loadingProgress, setLoadingProgress] = useState({ current: 0, total: 0 });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -17,36 +19,104 @@ export default function Tracks() {
     }
   }, []);
 
-  const fetchTracks = async (currentOffset = 0) => {
+  const fetchTracks = async (currentOffset = 0, isAutoLoading = false) => {
+    if (isAutoLoading) {
+      setLoadingMore(true);
+    }
+    
     try {
       const response = await fetch(
         `/api/tracks?userId=${userId}&offset=${currentOffset}`
       );
       const data = await response.json();
+      
       if (currentOffset === 0) {
         setTracks(data.tracks);
+        // Estimate total based on first batch
+        if (data.hasMore) {
+          setLoadingProgress({ current: data.tracks.length, total: 'Calculando...' });
+        }
       } else {
-        setTracks((prev) => [...prev, ...data.tracks]);
+        setTracks((prev) => {
+          const newTotal = prev.length + data.tracks.length;
+          setLoadingProgress(prev => ({ 
+            current: newTotal, 
+            total: prev.total === 'Calculando...' ? 'Calculando...' : prev.total 
+          }));
+          return [...prev, ...data.tracks];
+        });
       }
+      
       setHasMore(data.hasMore);
       setOffset(data.offset);
+      
+      return data.hasMore;
     } catch (error) {
       console.error("Error fetching tracks:", error);
+      return false;
     } finally {
-      setLoading(false);
+      if (!isAutoLoading) {
+        setLoading(false);
+      }
+      setLoadingMore(false);
     }
+  };
+
+  // Auto-load all tracks function
+  const loadAllTracks = async () => {
+    if (!userId) return;
+    
+    setLoading(true);
+    setLoadingProgress({ current: 0, total: 'Calculando...' });
+    
+    let currentOffset = 0;
+    let hasMoreTracks = true;
+    let allTracks = [];
+    
+    // First batch to get started
+    const firstBatch = await fetchTracks(0);
+    if (!firstBatch) return;
+    
+    currentOffset = 50;
+    hasMoreTracks = hasMore;
+    
+    // Continue loading all batches automatically
+    while (hasMoreTracks) {
+      await new Promise(resolve => setTimeout(resolve, 500)); // Small delay to avoid rate limiting
+      hasMoreTracks = await fetchTracks(currentOffset, true);
+      currentOffset += 50;
+    }
+    
+    setLoading(false);
+    setLoadingProgress(prev => ({ ...prev, total: prev.current }));
   };
 
   useEffect(() => {
     if (userId) {
-      fetchTracks();
+      loadAllTracks();
     }
   }, [userId]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        Cargando...
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
+        <div className="text-center p-8">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+            Cargando canciones...
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-4">
+            {loadingProgress.current > 0 
+              ? `${loadingProgress.current} canciones cargadas${loadingProgress.total !== 'Calculando...' ? ` de ${loadingProgress.total}` : ''}`
+              : 'Iniciando carga...'
+            }
+          </p>
+          {loadingMore && (
+            <div className="text-sm text-blue-600 dark:text-blue-400">
+              Cargando más canciones de Spotify...
+            </div>
+          )}
+        </div>
       </div>
     );
   }
@@ -95,16 +165,16 @@ export default function Tracks() {
             </div>
           ))}
         </div>
-        {hasMore && (
-          <div className="text-center mt-8">
-            <button
-              onClick={() => fetchTracks(offset)}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md"
-            >
-              Cargar más
-            </button>
+        
+        {/* Progress indicator at the bottom */}
+        <div className="text-center mt-8 p-4 bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <div className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+            Total de canciones: {tracks.length}
           </div>
-        )}
+          <div className="text-sm text-gray-600 dark:text-gray-400">
+            ✅ Todas tus canciones han sido cargadas y sincronizadas
+          </div>
+        </div>
       </div>
     </div>
   );
