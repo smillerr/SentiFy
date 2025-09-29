@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
-
-const prisma = new PrismaClient();
+import { encrypt, decrypt } from "@/lib/spotifyAuth";
 
 export async function GET() {
   const scopes =
@@ -54,19 +53,9 @@ export async function POST(request) {
     const userData = await profileResponse.json();
 
     // Encrypt tokens
-    const algorithm = "aes-256-cbc";
     const key = crypto.scryptSync(process.env.NEXTAUTH_SECRET, "salt", 32);
-    const iv = crypto.randomBytes(16);
-
-    const encrypt = (text) => {
-      const cipher = crypto.createCipher(algorithm, key);
-      let encrypted = cipher.update(text, "utf8", "hex");
-      encrypted += cipher.final("hex");
-      return encrypted;
-    };
-
-    const encryptedAccess = encrypt(access_token);
-    const encryptedRefresh = encrypt(refresh_token);
+    const encryptedAccess = encrypt(access_token, key);
+    const encryptedRefresh = encrypt(refresh_token, key);
 
     // Store in DB
     await prisma.user.upsert({
