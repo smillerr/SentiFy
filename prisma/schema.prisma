@@ -16,6 +16,7 @@ enum MoodCategory {
   oscura
   fiesta
   melancolica
+  sin_clasificar
 }
 
 model User {

@@ -265,6 +265,13 @@ export default function Tracks() {
                 ❌ Mostrar Todas
               </button>
             )}
+            <button
+              onClick={() => window.location.href = `/playlists?userId=${userId}`}
+              disabled={!userId}
+              className="bg-purple-500 hover:bg-purple-600 disabled:bg-gray-400 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 flex items-center gap-2"
+            >
+              🎵 Gestionar Playlists
+            </button>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               {selectedMoodFilter ? (
                 `Mostrando: ${getMoodEmoji(selectedMoodFilter)} ${selectedMoodFilter}`
