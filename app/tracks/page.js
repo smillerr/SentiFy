@@ -265,38 +265,12 @@ export default function Tracks() {
                 ❌ Mostrar Todas
               </button>
             )}
-            <div className="flex items-center gap-4">
-              <div className="flex gap-2">
-                <button
-                  onClick={() => {
-                    console.log('🧪 Prueba manual - analizando 1 canción');
-                    const firstTrack = tracks.slice(0, 1);
-                    analyzeNewTracks(firstTrack);
-                  }}
-                  disabled={tracks.length === 0}
-                  className="bg-blue-500 hover:bg-blue-600 disabled:bg-gray-400 text-white font-bold py-1 px-3 rounded text-sm"
-                >
-                  🧪 Probar (1)
-                </button>
-                <button
-                  onClick={() => {
-                    console.log('🧪 Prueba manual - analizando primeras 10 canciones');
-                    const firstBatch = tracks.slice(0, 10);
-                    analyzeNewTracks(firstBatch);
-                  }}
-                  disabled={tracks.length === 0}
-                  className="bg-green-500 hover:bg-green-600 disabled:bg-gray-400 text-white font-bold py-1 px-3 rounded text-sm"
-                >
-                  🧪 Probar (10)
-                </button>
-              </div>
-              <div className="text-sm text-gray-600 dark:text-gray-400">
-                {selectedMoodFilter ? (
-                  `Mostrando: ${getMoodEmoji(selectedMoodFilter)} ${selectedMoodFilter}`
-                ) : (
-                  `${tracks.length} canciones total`
-                )}
-              </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400">
+              {selectedMoodFilter ? (
+                `Mostrando: ${getMoodEmoji(selectedMoodFilter)} ${selectedMoodFilter}`
+              ) : (
+                `${tracks.length} canciones total`
+              )}
             </div>
           </div>
         </div>
@@ -346,8 +320,8 @@ export default function Tracks() {
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Analizadas {moodAnalysis.statistics.totalClassified} de {moodAnalysis.statistics.totalTracks} canciones
-              <div className="text-xs text-green-600 dark:text-green-400 mt-1">
-                🆓 Clasificación gratuita por base de datos de artistas
+              <div className="text-xs text-blue-600 dark:text-blue-400 mt-1">
+                🎯 Sistema inteligente: 1º Artistas conocidos → 2º ReccoBeats audio features
               </div>
             </div>
           </div>
@@ -429,7 +403,7 @@ export default function Tracks() {
                     </div>
                   </div>
                   <div className="text-xs text-gray-500 mt-1">
-                    🆓 Clasificación instantánea y gratuita
+                    🎤 Clasificación instantánea por artistas
                   </div>
                 </div>
               )}
