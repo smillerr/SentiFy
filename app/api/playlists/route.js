@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getValidAccessToken } from "../../../lib/spotifyAuth";
 
+//Handles the POST request to create a playlist from userId, name, description, and trackIds.
 export async function POST(request) {
   try {
     const { userId, name, description, trackIds } = await request.json();
