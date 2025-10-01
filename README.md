@@ -1,6 +1,6 @@
 # Sentify
 
-Sentify permite a los usuarios conectar su cuenta de Spotify, analizar sus playlists y reorganizarlas automáticamente en función del estado de ánimo detectado a partir de características de audio como energía, valencia y tempo.
+SentiFy es una aplicación innovadora que permite a los usuarios conectar de manera sencilla su cuenta personal de Spotify y, a partir de allí, analizar de forma automática las canciones que han guardado o marcado con “me gusta”. El sistema examina las playlists existentes utilizando las características de audio que proporciona la propia API de Spotify, tales como la energía, la valencia (nivel de positividad emocional), el tempo y otros atributos musicales. Con base en esta información, la aplicación reorganiza y clasifica las canciones en listas de reproducción nuevas que se construyen de acuerdo con el estado de ánimo predominante que transmiten. De este modo, los usuarios no solo tienen un acceso más ordenado a su música, sino que también pueden disfrutar de una experiencia personalizada que se adapta a cómo se sienten en cada momento, facilitando la creación de ambientes musicales para estudiar, entrenar, relajarse o divertirse.
 
 ## Tecnologías
 
