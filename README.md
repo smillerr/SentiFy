@@ -41,7 +41,7 @@ NEXTAUTH_URL="http://127.0.0.1:3000"
 
 ### 5. Configura Base de Datos
 
-La DB está en Supabase, no necesitas migraciones locales. Solo genera el cliente Prisma:
+Dado que la base de datos se encuentra en Supabase, no es necesario generar migraciones locales con el comando npx prisma migrate. Puede pasarse directamente a la generación del cliente de Prisma:
 
 ```bash
 npx prisma generate
@@ -89,4 +89,4 @@ sentify/
 ## Despliegue
 
 - Recomendado: Vercel (integración con Next.js)
-- DB: Supabase (managed PostgreSQL)
+- DB: Supabase (instancia administrada de PostgreSQL)
