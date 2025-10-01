@@ -1,6 +1,6 @@
 # Sentify
 
-Aplicación web para organizar playlists de Spotify por estados de ánimo usando heurísticas de audio features.
+Sentify permite a los usuarios conectar su cuenta de Spotify, analizar sus playlists y reorganizarlas automáticamente en función del estado de ánimo detectado a partir de características de audio como energía, valencia y tempo.
 
 ## Tecnologías
 
